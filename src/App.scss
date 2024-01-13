@@ -253,7 +253,7 @@ form input:focus{
     .foods-list{
         width: 100%;
         display: grid;
-        gap: 2rem;
+        gap: 3rem;
         grid-template-columns: repeat(1,1fr);
     }
 
@@ -351,20 +351,19 @@ form input:focus{
         z-index: 99990;
 
         .modal-content-box{
-            width: 60vw;
-            height: 90vh;
+            width: 95vw;
+            height: 95vh;
             border: 1px solid #fff;
             background-color: #fff;
             color: #111;
             border-radius: 5px;
             padding: 1rem;
-            padding-top: 0;
             overflow: scroll;
-
             img{
                 display: block;
                 margin: 0 auto;
                 margin-bottom: 2rem;
+                width: 100%;
                 object-fit: contain;
             }
             
@@ -391,12 +390,14 @@ form input:focus{
             top: 0;
             right: 0;
             z-index: 99999;
-            transform: translate(-50%, 50%);
-            font-size: 32px;
+            transform: translate(-10%, 10%);
+            font-size: 24px;
             font-weight: 600;
             display: flex;
             justify-content: center;
             align-items: center;
+            background-color: rgba(3, 102, 214, 0.3);
+            padding: 0.5rem;
         }
 
     }
@@ -427,18 +428,29 @@ form input:focus{
 
     .main-nav{
         .main-nav-menu{
-            gap: 2rem;
+            gap: 3rem;
             padding: 0rem;
         }
     }
 
-    
 // ============================== Product Section =========================
     .foods-list{
-        gap: 2rem;
         grid-template-columns: repeat(2,1fr);
     }
 
+// ============================== Food Modal =============================
+    .modal-container{
+
+        .modal-content-box{
+            width: 85vw;
+            height: 85vh;
+        }
+
+        .modal-close-btn{
+            transform: translate(-25%, 25%);
+            font-size: 32px;
+        }
+    }
 }
 
 @media screen and (min-width: 992px) {
@@ -513,8 +525,17 @@ form input:focus{
 
 // ============================== Product Section =========================
     .foods-list{
-        gap: 2rem;
         grid-template-columns: repeat(3,1fr);
+    }
+
+// ============================== Food Modal =============================
+    .modal-container{
+        .modal-content-box{
+           
+            img{
+                width: auto;
+            }
+        }
     }
 
 }

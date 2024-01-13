@@ -65,24 +65,22 @@ const FoodContext = ({children}:{children:React.ReactNode}) => {
     }
 
     const getFood = async(id:string, isFavourites:boolean) => {
-        const selectedF = foods.find(food => food.id === id);
-        if(!selectedF){
-            return false
+        if(!isFavourites){
+            const selectedF = foods.find(food => food.id === id);
+            if(!selectedF){
+                return false
+            }else{
+                setSelectedFood(selectedF);  
+            }
         }else{
-          if(!isFavourites){
-            setSelectedFood(selectedF);  
-          }else{
             const selectedFF = favourites.find(favourite => favourite.id === id);
             if(!selectedFF){
                 return false;
             }else{
                 setSelectedFood(selectedFF); 
             }
-          }
-         
-          setModal(true);
-         
         }
+        setModal(true);
     }
 
     const addToFavourites = async(id:string) => {

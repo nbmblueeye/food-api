@@ -1,28 +1,26 @@
 import axios from 'axios';
 import React, { createContext, useContext, useState } from 'react';
 import { toast } from 'react-toastify';
+import { Food, FoodData } from '../types/FoodType';
 
-type Food = {
-    id: string,
-    name: string,
-    thumbnail: string,
-    category: string,
-    instruction: string,
-    sourceUrl:string,
-}
 
 type FoodContextType = {
     foods:Food[],
     favourites:Food[],
     selectedFood:Food,
+    selectedFoodData:FoodData,
+    todayFoodData:FoodData,
     modal:boolean,
     setModal:(modal:boolean) => void,
     getFoods: (url:string) => Promise<void>,
-    getFood: (id:string, isFavourites:boolean) => void,
+    getFood: (id:string, isFavourites:boolean, isTodayFood:boolean) => void,
     addToFavourites:(id:string) => void,
     loading: boolean,
+    loadingModal:boolean,
     searchFoods: (url:string, params:string) => Promise<void>,
     randomFoods: (url:string, e:React.MouseEvent<HTMLButtonElement>) => Promise<void>,
+    getFoodByID:(url:string, params:string) => Promise<void>,
+    getToDayFood:(url:string) => Promise<void>,
 }
 
 const CreateFoodContext = createContext({} as FoodContextType);
@@ -33,8 +31,11 @@ const FoodContext = ({children}:{children:React.ReactNode}) => {
     const [foods, setFoods] = useState<Food[]>([]);
     const [favourites, setFavourites] = useState<Food[]>([]);
     const [loading, setLoading] = useState(false);
+    const [loadingModal, setLoadingModal] = useState(false);
 
     const [selectedFood, setSelectedFood] = useState({} as Food);
+    const [selectedFoodData, setSelectedFoodData] = useState({} as FoodData);
+    const [todayFoodData, setTodayFoodData] = useState({} as FoodData);
     const [modal, setModal] = useState(false); 
 
     const getFoods = async(url:string) => {
@@ -48,15 +49,15 @@ const FoodContext = ({children}:{children:React.ReactNode}) => {
                         name: item.strMeal,
                         thumbnail: item.strMealThumb,
                         category: item.strCategory,
-                        instruction: item.strInstructions,
-                        sourceUrl:item.strSource
                     }
                 })
                 if(meals.length > 0){
                     setFoods(meals);
                 }
             }
-            setLoading(false);
+            setTimeout(() => {
+                setLoading(false);
+            }, 500);
         })
         .catch(error => {
             console.log(error);
@@ -64,20 +65,26 @@ const FoodContext = ({children}:{children:React.ReactNode}) => {
         })
     }
 
-    const getFood = async(id:string, isFavourites:boolean) => {
-        if(!isFavourites){
-            const selectedF = foods.find(food => food.id === id);
-            if(!selectedF){
-                return false
-            }else{
-                setSelectedFood(selectedF);  
-            }
-        }else{
+    const getFood = async(id:string, isFavourites:boolean, isTodayFood:boolean) => {
+        if(isFavourites){
             const selectedFF = favourites.find(favourite => favourite.id === id);
             if(!selectedFF){
                 return false;
             }else{
                 setSelectedFood(selectedFF); 
+            }
+        }else if(isTodayFood){
+            if(Object.keys(todayFoodData).length > 0){
+                setSelectedFood(todayFoodData); 
+            }else{
+                return false
+            }
+        }else{
+            const selectedF = foods.find(food => food.id === id);
+            if(!selectedF){
+                return false
+            }else{
+                setSelectedFood(selectedF);  
             }
         }
         setModal(true);
@@ -110,19 +117,104 @@ const FoodContext = ({children}:{children:React.ReactNode}) => {
         await getFoods(url);
     }
 
+    const getToDayFood = async(url: string) => {
+        setLoading(true);
+        await axios.get(url)
+        .then(response => {
+            console.log(response.data);
+            if(response.status = 200){
+                if(response.data.meals.length > 0){
+                let { 
+                    idMeal:id,
+                    strMeal:name,
+                    strMealThumb:thumbnail,
+                    strCategory:category,
+                    strInstructions:instruction,
+                    strSource,
+                    strYoutube,
+                    strArea,
+                 } = response.data.meals[0];
+
+                 setTodayFoodData({
+                    id,
+                    name,
+                    thumbnail,
+                    category,
+                    instruction,
+                    strSource,
+                    strYoutube,
+                    strArea,
+                 })
+                }
+               setTimeout(() => {
+                setLoading(false);
+               }, 450);
+            }
+        })
+        .catch(error => {
+            console.log(error);
+            setLoading(false);
+        })
+    }
+
+    const getFoodByID = async(url:string, params:string) => {
+        setLoadingModal(true);
+        let newurl = url+`${params}`;
+        await axios.get(newurl)
+        .then(response => {
+            if(response.status = 200){
+                if(response.data.meals.length > 0){
+                let { 
+                    idMeal:id,
+                    strMeal:name,
+                    strMealThumb:thumbnail,
+                    strCategory:category,
+                    strInstructions:instruction,
+                    strSource,
+                    strYoutube,
+                    strArea,
+                 } = response.data.meals[0];
+
+                 setSelectedFoodData({
+                    id,
+                    name,
+                    thumbnail,
+                    category,
+                    instruction,
+                    strSource,
+                    strYoutube,
+                    strArea,
+                 })
+                }
+               setTimeout(() => {
+                setLoadingModal(false);
+               }, 250);
+            }
+        })
+        .catch(error => {
+            console.log(error);
+            setLoadingModal(false);
+        })
+    }
+    
   return (
     <CreateFoodContext.Provider value={{
         foods,
         favourites,
         selectedFood,
+        selectedFoodData,
+        todayFoodData,
         modal,
         setModal,
         getFoods,
         getFood,
         addToFavourites,
         loading,
+        loadingModal,
         searchFoods,
         randomFoods,
+        getFoodByID,
+        getToDayFood,
     }}>
         {children}
     </CreateFoodContext.Provider>

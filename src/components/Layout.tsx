@@ -1,12 +1,15 @@
+import { Outlet } from 'react-router-dom'
+import Footer from './Footer'
 import NavBar from './NavBar'
 
-const Layout = ({children}:{children:React.ReactNode}) => {
+const Layout = () => {
   return (
     <>
         <NavBar/>
-        <div className="container">
-            {children}
+        <div className="main-content">
+            <Outlet/>
         </div>
+        <Footer/>
     </>
   )
 }

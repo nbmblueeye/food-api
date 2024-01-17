@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
-import Layout from '../components/Layout'
 import { UseFoodContext } from '../contexts/FoodContext'
-import FoodItem from '../components/FoodItem';
 import FoodModal from '../components/FoodModal';
+import PaginationPost from '../components/PaginationPost';
+import HeroSection from '../components/HeroSection';
 
 const Index = () => {
 
@@ -17,14 +17,11 @@ const Index = () => {
     data = <div className="loader-box"><div className="loader"></div></div>
   }else{
     if(foods.length > 0 ){
-      data = <div className="foods-list">
-        {
-          foods.map(food => {
-            return (
-              <FoodItem food={food} key={food.id}/>
-            )})
-        }
-      </div>
+      data = 
+      <>
+        <PaginationPost/>
+      </>
+     
     }else{
       data = <div className="foods-list">
         <p>No Food available</p>
@@ -33,14 +30,15 @@ const Index = () => {
   }
 
   return (
-    <Layout>
-        <div className="content-section">
-          {
-            data
-          }
-        </div>
-        {modal && <FoodModal/>}
-    </Layout>
+    <>
+      <HeroSection/>
+      <div className="content-section container">
+        {
+          data
+        }
+      </div>
+      {modal && <FoodModal/>}
+    </>
   )
 }
 

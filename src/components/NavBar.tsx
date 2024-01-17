@@ -9,28 +9,18 @@ import SearchBar from './SearchBar';
 
 const NavBar = () => {
 
-   const { navState, setNavState, favoriteNavState, setFavouriteNavstate } = UseNavContext();
-   const {  favourites } = UseFoodContext();
-
-   const toggleMobileMenu = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault()
-        setNavState(!navState);
-   }
-
-   const toggleFavouriteMenu = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault()
-        setFavouriteNavstate(!favoriteNavState);
-    }
+   const { navState, toggleMobileMenu, favoriteNavState, toggleFavouriteMenu } = UseNavContext();
+   const { favourites } = UseFoodContext();
 
   return (
     <div className="main-nav">
        <div className="container">
             <div className="main-nav-wrapper">
-                <Link to="#">
-                    <p className='main-nav-logo'>Food API</p>
+                <Link to="/" className='main-nav-logo'>
+                    Food API
                 </Link>
                 <div className="main-nav-component">
-                    <button className="main-nav-fovor" onClick={(e) => toggleFavouriteMenu(e)}>
+                    <button className={`main-nav-fovor ${favoriteNavState ? "active-favorite":""}`} onClick={(e) => toggleFavouriteMenu(e)}>
                         <IoIosBasket /><span>{`(${favourites.length})`}</span>
                     </button>
                     <button className="main-nav-toggler" onClick={(e) => toggleMobileMenu(e)}>

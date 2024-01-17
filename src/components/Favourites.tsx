@@ -9,7 +9,7 @@ const Favourites = () => {
     return (
         <div className={`main-nav-favoutites-wrapper ${favoriteNavState ? "open-main-nav-favoutites":"close-main-nav-favoutites"}`}>
             <div className="container">
-                <h3>Your Favourites Food</h3>
+                <h3>Your Favorites Food</h3>
                 {
                     favourites.length > 0 ?
                     <ul className='main-nav-favoutites'>
@@ -17,7 +17,7 @@ const Favourites = () => {
                             favourites.map((favour) => {
                                 return(
                                     <li className="nav-favoutites-item">
-                                        <div className="favoutites-item-box" onClick={() => getFood(favour.id, true)}>
+                                        <div className="favoutites-item-box" onClick={() => getFood(favour.id, true, false)}>
                                             <img src={favour.thumbnail} alt={favour.name} />
                                         </div>
                                     </li>
